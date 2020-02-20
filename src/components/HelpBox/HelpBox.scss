@@ -1,0 +1,25 @@
+.HelpBox {
+    @mixin ellipsis($line-cnt, $line-height) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: $line-cnt;
+        -webkit-box-orient: vertical;
+        word-break:break-all; 
+        line-height: $line-height;
+        height: $line-height * $line-cnt;
+    }
+  
+    .ellipsis-3 {
+        @include ellipsis(3, 1.5em);
+    }
+
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    box-sizing: border-box;
+    background-color: white;
+}

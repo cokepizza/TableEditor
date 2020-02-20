@@ -1,0 +1,33 @@
+.HeaderButton {
+    border: 0px;
+    background: none;
+    justify-content: flex-start;
+    font-variant-caps: all-petite-caps;
+    opacity: 0.3;
+    width: initial;
+    border-radius: 30px;
+    user-select: none;
+    
+    &+& {
+        margin-left: 10px;
+    }
+
+    &:hover {
+        background: none;
+        -webkit-animation: mover 2s infinite  alternate;
+        animation: mover 2s infinite  alternate;
+    }
+}
+
+@-webkit-keyframes mover {
+    0% { transform: translateY(0); }
+    20% { transform: translateY(-2px); }
+}
+@keyframes mover {
+    0% { transform: translateY(0); }
+    20% { transform: translateY(-2px); }
+}
+
+.HeaderButton.checked {
+    opacity: 1;
+}

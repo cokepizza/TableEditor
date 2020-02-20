@@ -1,0 +1,242 @@
+.Canvas {
+    // width:1320px;
+    // height:720px;
+    // border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+    // top: -300px;
+    // left: 300px;
+    // position: absolute;
+    // top: 100px;
+    // left: 700px;
+    z-index: 100;
+}
+
+.InformDialog {
+    display: flex;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 400px;
+    height: 100%;
+    color: black;
+    background: linear-gradient(90deg, #f9fad8, #cfecd0);
+    border-width: 1px 0px 1px 1px;
+    border-style: solid;
+    border-color: purple;
+    transition: 0.5s;
+    z-index: 500;
+    visibility: hidden;
+}
+
+.InformDialog.active {
+    left:-400px;
+    visibility: visible;
+}
+
+.InformDialogBody {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.PropertiesDialog {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 400px;
+    height: 100%;
+    color: black;
+    transition: 0.5s;
+    z-index: 500;
+    box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+    visibility: hidden;
+}
+
+.PropertiesDialog.active {
+    left: calc(100% + 5px);
+    visibility: visible;
+}
+
+.PropertiesDialogBody {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(248, 248, 248);
+    padding-top: 20px;
+}
+
+.DataBindingDialog {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 400px;
+    height: 100%;
+    color: black;
+    transition: 0.5s;
+    z-index: 500;
+    box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+    visibility: hidden;
+}
+
+.DataBindingDialog.active {
+    left: calc(100% + 5px);
+    visibility: visible;
+}
+
+.DataBindingDialogBody {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(248, 248, 248);
+    padding-top: 20px;
+}
+
+.EditingDialog {
+    // width: 520px;
+    // height: 720px;
+    // background: linear-gradient(90deg, #cfecd0, #ffc5ca);
+    // background: linear-gradient(90deg, #cfecd0, #ffc5ca);
+    box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+    // background-color: rgba(255, 255, 255, 0.5);
+    color: black;
+    background-color: rgb(248, 248, 248);
+    padding-top: 15px;
+    z-index: 1000;
+}
+
+.DialogHeader {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.DialogHeaderSelectBox {
+    display:flex;
+    width: 50%;
+    height: 25px;
+    box-sizing: border-box;
+}
+
+.DialogHeaderIconBox {
+    display:flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 30px;
+    box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+    background-color: white;
+    // box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+    border: 1px solid black;
+    box-sizing: border-box;
+    padding-left: 10px;
+    padding-right: 10px;
+    opacity: 0.7;
+    transition: 0.5s;
+    color: black;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.DialogHeaderIcon {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+}
+
+
+.verticalLine {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-left: 2px solid gray;
+    height: 60%;
+    width: 0%;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.DialogBody {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    // padding-left: 20px;
+    // padding-right: 20px;
+    // min-height: 300px;
+    min-height: 300px;
+    max-width: 800px;
+    margin-left: 20px;
+    margin-right: 20px;
+    overflow-x: auto;
+    
+    &::-webkit-scrollbar-track
+    {
+        box-shadow: inset rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+        border-radius: 10px;
+        background-color:white;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+    }
+
+    &::-webkit-scrollbar
+    {
+        background-color:white;
+        height: 15px;
+    }
+
+    &::-webkit-scrollbar-thumb
+    {
+        border-radius: 10px;
+        border: 1px solid rgba(0,0,0,0.2);
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+}
+
+.DialogFooter {
+    width: 100%;
+    // height: 10%;
+    height: 200px;
+}
+
+.TableView {
+    display: none;
+    width: 100%;
+}
+
+.ListView {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    width: 300px;
+    padding-right: 20px;
+    padding-left: 20px;
+}

@@ -1,0 +1,14 @@
+.SearchIcon {
+    display:flex;
+    height: 100%;
+    width: 5%;
+    cursor: pointer;
+    padding-left:3%;
+    padding-right: 2%;
+    background-color: white;
+    color: rgba(0, 0, 0, 0.2);
+
+    &:hover {
+        color: rgba(0, 0, 0, 0.5);
+    }
+}

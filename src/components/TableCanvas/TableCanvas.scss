@@ -1,0 +1,163 @@
+.TableCanvas {
+    box-sizing: border-box;
+    border: 1px solid black;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+}
+
+.ColHeader {
+    display: flex;
+    // width: 474px;
+    height: 60px;
+    box-sizing: border-box;
+    border-bottom: 1px solid black;
+}
+
+.ColWrapperBetween {
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.ColWrapper {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    border-left: 1px solid black;
+    box-sizing: border-box;
+}
+
+.RowWrapperBetween {
+    box-sizing: border-box;
+    display: flex;
+    user-select: none;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.ColHeaderBetween {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid black;
+    position: relative;
+    pointer-events: none;
+   
+    &::before {
+        content:'';
+        position: absolute;
+        top: 0px;
+        left: -3px;
+        width: 7px;
+        background-color: transparent;
+        height: 100%;
+        pointer-events: all;
+    }
+
+    &::after {
+        content:'';
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 1px;
+        background-color: black;
+        height: 100%;
+        pointer-events: all;
+    }
+
+    &:hover::before {
+        cursor: col-resize;
+    }
+
+    &:hover::after {
+        cursor: col-resize;
+    }
+}
+
+.RowHeaderBetween {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    pointer-events: none;
+    // border-left: 1px solid black;
+ 
+    &::before {
+        content:'';
+        position: absolute;
+        top: -3px;
+        left: 0px;
+        height: 7px;
+        background-color: transparent;
+        width: 100%;
+        pointer-events: all;
+    }
+
+    &::after {
+        content:'';
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 1px;
+        background-color: black;
+        width: 100%;
+        pointer-events: all;
+    }
+
+    &:hover::before {
+        cursor: row-resize;
+    }
+
+    &:hover::after {
+        cursor: row-resize;
+    }
+}
+
+.ColBorder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 100%;
+    background: black;
+    cursor: col-resize;
+    border: 1px solid transparent;
+    &:hover {
+        width: 2px;
+    }
+}
+
+.RowHeader {
+    // width: 120px;
+    // height: 339px;
+    border-right: 1px solid black;
+}
+
+.CanvasWrapper {
+    // width: 476px;
+    display: flex;
+}
+
+.DivCanvas {
+    position: relative;
+    z-index: 100;
+    // width: 354px;
+    // height: 339px;
+}
+
+.RowWrapper {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid black;
+    box-sizing: border-box;
+    height: auto;
+}
