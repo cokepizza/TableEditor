@@ -114,7 +114,7 @@ const DataBinding = ({
           </IconContext.Provider>
         </TitleTextBlock>
       </TitleBlock>
-      <DataBindingBodyBlock loading={loading} data={data}>
+      <DataBindingBodyBlock loading={loading ? 'true': null} data={data}>
         {loading || !data ? (
           <ImageBlock src={Spinner} />
         ) : (

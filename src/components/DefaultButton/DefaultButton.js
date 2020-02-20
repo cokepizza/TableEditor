@@ -1,8 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 import classnames from 'classnames';
 import './DefaultButton.scss';
-import DefaultText from '../DefaultText/DefaultText';
 
 // const DefaultButtonBlock = styled.div`
 //  border: none;

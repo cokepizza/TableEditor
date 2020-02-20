@@ -14,9 +14,9 @@ const TableCanvasContainer = () => {
 
   const dispatch = useDispatch();
 
-  const updateGlobalClicked = clicked => {
+  const updateGlobalClicked = useCallback(clicked => {
     dispatch(setGlobalClicked(clicked));
-  };
+  }, [dispatch]);
 
   const onClick = useCallback(
     ([type, index]) => {

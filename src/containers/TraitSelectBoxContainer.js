@@ -34,7 +34,7 @@ const TraitBoxContainer = ({ name, param }) => {
         })
       );
     },
-    [dispatch]
+    [dispatch, name]
   );
 
   return (

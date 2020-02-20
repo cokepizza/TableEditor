@@ -398,7 +398,7 @@ const addCover = (kind, cover, required) => {
         ++valIndex;
 
         if (popIndex < required.length) {
-          const { prev, surplus, sum } = required[popIndex];
+          const { prev, surplus } = required[popIndex];
           if (prev + surplus === valIndex + 1) {
             ++popIndex;
           }

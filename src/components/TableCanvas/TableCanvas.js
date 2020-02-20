@@ -7,11 +7,43 @@ import React, {
 } from 'react';
 import { useDispatch } from 'react-redux';
 import _ from 'lodash';
+import styled from 'styled-components';
+
 import './TableCanvas.scss';
-import DefaultText from '../DefaultText/DefaultText';
 import TableCell from '../TableCell/TableCell';
 import TableHeader from '../TableHeader/TableHeader';
 import { onClickThunk } from '../../modules/editingdialog';
+
+const ColWrapper = styled.p`
+  display: flex;
+  font-size: 12px;
+  font-weight: bold;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  cursor: default;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  border-left: 1px solid black;
+  box-sizing: border-box;
+`;
+
+const RowWrapper = styled.p`
+  display: flex;
+  font-size: 12px;
+  font-weight: bold;
+  width: 100%;
+  margin: 0px;
+  cursor: default;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid black;
+  box-sizing: border-box;
+  height: auto;
+`;
+
 
 const TableCanvas = ({
   cover,
@@ -48,9 +80,9 @@ const TableCanvas = ({
   const coverRef = useRef(cover);
   const idCacheRef = useRef(null);
 
-  const [hovered, setHovered] = useState(hoveredRef.current);
-  const [clicked, setClicked] = useState(clickedRef.current);
-  const [draggable, setDraggable] = useState(draggableRef.current);
+  const [, setHovered] = useState(hoveredRef.current);
+  const [, setClicked] = useState(clickedRef.current);
+  const [, setDraggable] = useState(draggableRef.current);
 
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
@@ -70,7 +102,7 @@ const TableCanvas = ({
     // draggableRef.current = draggable;
     // hoveredRef.current = hovered;
     forceUpdate();
-  }, [cell, cover]);
+  }, [cell, cover, forceUpdate]);
 
   const onMouseOver = useCallback((e, rows, cols) => {
     hoveredRef.current = {
@@ -124,7 +156,7 @@ const TableCanvas = ({
 
       return clickedRef.current;
     });
-  }, []);
+  }, [updateGlobalClicked]);
 
   const excludeCell = useCallback((rows, cols, id) => {
     setClicked(prevState => {
@@ -163,7 +195,7 @@ const TableCanvas = ({
 
       return clickedRef.current;
     });
-  }, []);
+  }, [updateGlobalClicked]);
 
   const onMouseDown = useCallback((e, rows, cols, id) => {
     draggableRef.current = {
@@ -201,9 +233,9 @@ const TableCanvas = ({
       }
       return clickedRef.current;
     });
-  }, []);
+  }, [excludeCell, includeCell, updateGlobalClicked]);
 
-  const cellBundler = (
+  const cellBundler = useCallback((
     rowsMin,
     rowsMax,
     colsMin,
@@ -288,7 +320,7 @@ const TableCanvas = ({
         cachedClickedRef
       );
     }
-  };
+  }, [excludeCell, includeCell]);
 
   const onMouseMove = useCallback((e, rows, cols, id) => {
     if (
@@ -313,43 +345,8 @@ const TableCanvas = ({
 
       const cachedClickedRef = _.cloneDeep(clickedRef.current);
       cellBundler(rowsMin, rowsMax, colsMin, colsMax, cachedClickedRef);
-
-      // <legacy>
-      // const originRows = draggableRef.current.point.rows;
-      // const originCols = draggableRef.current.point.cols;
-      // const rowsMin = Math.min(originRows[0], rows[0]);
-      // const rowsMax = Math.max(
-      //   originRows[originRows.length - 1],
-      //   rows[rows.length - 1]
-      // );
-      // const colsMin = Math.min(originCols[0], cols[0]);
-      // const colsMax = Math.max(
-      //   originCols[originCols.length - 1],
-      //   cols[cols.length - 1]
-      // );
-
-      // cellRef.current.forEach(cel => {
-      //   const celRowsMin = cel.rows[0];
-      //   const celRowsMax = cel.rows[cel.rows.length - 1];
-      //   const celColsMin = cel.cols[0];
-      //   const celColsMax = cel.cols[cel.cols.length - 1];
-      //   if (
-      //     rowsMin <= celRowsMin &&
-      //     rowsMax >= celRowsMax &&
-      //     colsMin <= celColsMin &&
-      //     colsMax >= celColsMax
-      //   ) {
-      //     if (!clickedRef.current.cell.has(cel.id)) {
-      //       includeCell(cel.rows, cel.cols, cel.id);
-      //     }
-      //   } else {
-      //     if (clickedRef.current.cell.has(cel.id)) {
-      //       excludeCell(cel.rows, cel.cols, cel.id);
-      //     }
-      //   }
-      // });
     }
-  }, []);
+  }, [cellBundler]);
 
   const onMouseUp = useCallback(() => {
     draggableRef.current = {
@@ -396,12 +393,11 @@ const TableCanvas = ({
             >
               {!section.children ||
                 (section.children && section.children.length > 0 && (
-                  <DefaultText
-                    cn="ColWrapper"
+                  <ColWrapper 
                     style={section.children ? {} : { borderLeft: '0px' }}
                   >
                     {section.title}
-                  </DefaultText>
+                  </ColWrapper>
                 ))}
               {section.children ? (
                 <div
@@ -449,12 +445,11 @@ const TableCanvas = ({
                         width: '120px'
                       }}
                     >
-                      <DefaultText
-                        cn="RowWrapper"
+                      <RowWrapper
                         style={rowCount > 0 ? {} : { borderTop: '0px' }}
                       >
                         {section.title}
-                      </DefaultText>
+                      </RowWrapper>
                       {section.children ? (
                         <div
                           style={{

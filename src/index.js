@@ -55,6 +55,11 @@ const external = {
                 cols: [2],
                 rows: [2],
             },
+            {
+                id: 6,
+                cols: [0, 1, 2],
+                rows: [3, 4, 5],
+            },
             
         ],
         cover: {
@@ -62,9 +67,17 @@ const external = {
                 {
                     title: 'Header',
                     children: [
-                        { height: 150 },
-                        { height: 150 },
-                        { height: 150 },
+                        { height: 80 },
+                        { height: 80 },
+                        { height: 80 },
+                    ],
+                },
+                {
+                    title: 'Body',
+                    children: [
+                        { height: 80 },
+                        { height: 80 },
+                        { height: 80 },
                     ],
                 }
             ],
@@ -76,9 +89,9 @@ const external = {
                 {
                     title: 'Header',
                     children: [
-                        { width: 150 },
-                        { width: 150 },
-                        { width: 150 },
+                        { width: 80 },
+                        { width: 80 },
+                        { width: 80 },
                     ],
                 }
             ],

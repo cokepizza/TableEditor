@@ -69,7 +69,7 @@ const EditingDialogContainer = ({ modal, model, editor, tableConfig }) => {
     dispatch(editingdialogClearAll());
     dispatch(tablecanvasClearAll());
     // modal.close();
-  }, [modal]);
+  }, [dispatch]);
 
   useEffect(() => {
     let { cell, cover } = tableConfig;
@@ -81,8 +81,6 @@ const EditingDialogContainer = ({ modal, model, editor, tableConfig }) => {
       })
     };
 
-    console.dir(cover);
-    
     const cellId = cell.length;
 
     dispatch(
@@ -97,7 +95,7 @@ const EditingDialogContainer = ({ modal, model, editor, tableConfig }) => {
         }
       })
     );
-  }, [tableConfig]);
+  }, [dispatch, tableConfig]);
 
   useEffect(() => {
     if (!dataSelected && dataBinding && Object.keys(dataBinding).length > 0) {
@@ -125,7 +123,7 @@ const EditingDialogContainer = ({ modal, model, editor, tableConfig }) => {
 
   const onClick = useCallback(e => {
     e.stopPropagation();
-  });
+  }, []);
 
   const canvasWidth = cover.columnHeader.reduce((acc, cur) => {
     if (cur.children) {

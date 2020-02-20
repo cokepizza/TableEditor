@@ -81,7 +81,7 @@ const ListItem = ({ data, textWrite, textErase, propertyClick }) => {
 
   const onClick = useCallback(
     e => propertyClick(e.currentTarget.dataset.name),
-    []
+    [propertyClick]
   );
 
   return (

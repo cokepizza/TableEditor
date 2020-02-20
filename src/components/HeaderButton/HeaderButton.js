@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import styled from 'styled-components';
+import React from 'react';
 import DefaultButton from '../DefaultButton/DefaultButton';
 import classnames from 'classnames';
 import './HeaderButton.scss';

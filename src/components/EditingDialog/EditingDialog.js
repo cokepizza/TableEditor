@@ -3,7 +3,7 @@ import './EditingDialog.scss';
 import { MdClose } from 'react-icons/md';
 
 import { IconContext } from 'react-icons';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import HeaderButtonContainer from '../../containers/HeaderButtonContainer';
 import TableCanvasContainer from '../../containers/TableCanvasContainer';

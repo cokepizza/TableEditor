@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import SubmitForm from '../components/SubmitForm';
 
@@ -13,8 +13,6 @@ const SubmitFormContainer = ({ onClose, model }) => {
     })
   );
 
-  const dispatch = useDispatch();
-
   const onSubmit = useCallback(
     e => {
       e.preventDefault();
@@ -26,22 +24,25 @@ const SubmitFormContainer = ({ onClose, model }) => {
 
       onClose();
 
-      let itemData;
-      if (dataSelected) {
-        itemData = dataSelected
-          .split('.')
-          .filter((data, index) => index > 1)
-          .join('.');
-      }
+      // if (dataSelected) {
+      //   itemData = dataSelected
+      //     .split('.')
+      //     .filter((data, index) => index > 1)
+      //     .join('.');
+      // }
 
+      console.dir(cover);
+      console.dir(cell);
+      console.dir(dataSelected);
+      console.dir(headerOnly);
       
     },
-    [dispatch, cover, cell, headerOnly, dataSelected]
+    [cover, cell, headerOnly, dataSelected, onClose]
   );
 
   const onCancel = useCallback(() => {
     onClose();
-  }, [dispatch]);
+  }, [onClose]);
 
   return <SubmitForm onSubmit={onSubmit} onCancel={onCancel} />;
 };

@@ -38,7 +38,6 @@ const fullRectangleCheck = (rows, cols, localCell, globalCell) => {
 
 const sameAreaCheck = (rows, cols, cover) => {
   let rowIndex = 0,
-    colIndex = 0,
     prevRow = 0;
 
   //  check only header & body area

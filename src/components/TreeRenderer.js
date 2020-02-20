@@ -54,7 +54,6 @@ const NameBlock = styled.div`
 
 const TreeRenderer = ({ depth, data, selected, fullText, onClick }) => {
   if (!data) return null;
-  console.dir(selected);
 
   return (
     <React.Fragment>

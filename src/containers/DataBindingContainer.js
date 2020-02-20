@@ -12,9 +12,9 @@ import {
 } from '../modules/tablecanvas';
 
 const DataBindingContainer = ({ onCloseSideModal, editor }) => {
-  const { menu, dataBinding, dataSelected, dataReload } = useSelector(
+  const { checked, dataBinding, dataSelected, dataReload } = useSelector(
     ({ editingdialog, tablecanvas }) => ({
-      menu: editingdialog.menu,
+      checked: editingdialog.menu['DataBinding']['checked'],
       dataBinding: tablecanvas.dataBinding,
       dataSelected: tablecanvas.dataSelected,
       dataReload: tablecanvas.dataReload
@@ -62,12 +62,12 @@ const DataBindingContainer = ({ onCloseSideModal, editor }) => {
   };
 
   useEffect(() => {
-    if (menu['DataBinding']['checked']) {
+    if (checked) {
       dispatch(setDataReload());
     } else {
       dispatch(clearDataBinding());
     }
-  }, [menu['DataBinding']['checked']]);
+  }, [dispatch, checked]);
 
   const onClick = useCallback(
     (depth, dataSelected) => {
@@ -80,11 +80,11 @@ const DataBindingContainer = ({ onCloseSideModal, editor }) => {
 
   const [state] = useAsync(connection, [dispatch, dataReload]);
 
-  const { loading, data, error } = state;
+  const { loading, error } = state;
 
   return (
     <DataBinding
-      active={menu['DataBinding']['checked']}
+      active={checked}
       onCloseSideModal={onCloseSideModal}
       onClick={onClick}
       loading={loading}

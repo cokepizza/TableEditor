@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import cn from 'classnames';
 import './HelpBox.scss';
 
-const HelpBoxBlock = styled.div``;
 const HelpBoxOuter = styled.div`
   display: flex;
   justify-content: center;
