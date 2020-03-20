@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import SubmitForm from '../components/SubmitForm';
+import { unloader } from '../lib/revisedLoader';
 
 const SubmitFormContainer = ({ onClose, model }) => {
   const { cover, cell, dataSelected, headerOnly } = useSelector(
@@ -16,28 +17,33 @@ const SubmitFormContainer = ({ onClose, model }) => {
   const onSubmit = useCallback(
     e => {
       e.preventDefault();
-      // const { headerSet, bodySet, columns } = unloader({
-      //   cover,
-      //   cell,
-      //   headerOnly
-      // });
+      const { headerSet, bodySet, columns } = unloader({
+        cover,
+        cell,
+        headerOnly
+      });
+
+      let itemData;
+      if (dataSelected) {
+        itemData = dataSelected
+          .split('.')
+          .filter((data, index) => index > 1)
+          .join('.');
+
+        model.set('itemData', itemData);
+      }
+
+      model.addAttributes({
+        columns,
+        headerSet,
+        bodySet
+      });
 
       onClose();
 
-      // if (dataSelected) {
-      //   itemData = dataSelected
-      //     .split('.')
-      //     .filter((data, index) => index > 1)
-      //     .join('.');
-      // }
-
-      console.dir(cover);
-      console.dir(cell);
-      console.dir(dataSelected);
-      console.dir(headerOnly);
-      
+      model.trigger('struct');
     },
-    [cover, cell, headerOnly, dataSelected, onClose]
+    [cover, cell, headerOnly, dataSelected, onClose, model]
   );
 
   const onCancel = useCallback(() => {

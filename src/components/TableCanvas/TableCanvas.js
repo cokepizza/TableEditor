@@ -7,47 +7,17 @@ import React, {
 } from 'react';
 import { useDispatch } from 'react-redux';
 import _ from 'lodash';
-import styled from 'styled-components';
-
 import './TableCanvas.scss';
+import DefaultText from '../DefaultText/DefaultText';
 import TableCell from '../TableCell/TableCell';
 import TableHeader from '../TableHeader/TableHeader';
 import { onClickThunk } from '../../modules/editingdialog';
 
-const ColWrapper = styled.p`
-  display: flex;
-  font-size: 12px;
-  font-weight: bold;
-  width: 100%;
-  height: 100%;
-  margin: 0px;
-  cursor: default;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  border-left: 1px solid black;
-  box-sizing: border-box;
-`;
-
-const RowWrapper = styled.p`
-  display: flex;
-  font-size: 12px;
-  font-weight: bold;
-  width: 100%;
-  margin: 0px;
-  cursor: default;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  border-top: 1px solid black;
-  box-sizing: border-box;
-  height: auto;
-`;
-
-
 const TableCanvas = ({
   cover,
   cell,
+  zoom,
+  // onWheel,
   onClick,
   globalClicked,
   updateGlobalClicked
@@ -120,120 +90,129 @@ const TableCanvas = ({
     setHovered(hoveredRef.current);
   }, []);
 
-  const includeCell = useCallback((rows, cols, id) => {
-    setClicked(prevState => {
-      const revisedRows = new Map(prevState.rows);
-      const revisedCols = new Map(prevState.cols);
-      const revisedCell = new Set(prevState.cell);
+  const includeCell = useCallback(
+    (rows, cols, id) => {
+      setClicked(prevState => {
+        const revisedRows = new Map(prevState.rows);
+        const revisedCols = new Map(prevState.cols);
+        const revisedCell = new Set(prevState.cell);
 
-      rows.forEach(row => {
-        if (revisedRows.has(row)) {
-          revisedRows.set(row, revisedRows.get(row) + 1);
-        } else {
-          revisedRows.set(row, 1);
+        rows.forEach(row => {
+          if (revisedRows.has(row)) {
+            revisedRows.set(row, revisedRows.get(row) + 1);
+          } else {
+            revisedRows.set(row, 1);
+          }
+        });
+
+        cols.forEach(col => {
+          if (revisedCols.has(col)) {
+            revisedCols.set(col, revisedCols.get(col) + 1);
+          } else {
+            revisedCols.set(col, 1);
+          }
+        });
+
+        revisedCell.add(id);
+        const nextState = {
+          rows: revisedRows,
+          cols: revisedCols,
+          cell: revisedCell
+        };
+
+        clickedRef.current = nextState;
+        if (updateGlobalClicked) {
+          updateGlobalClicked(nextState);
         }
-      });
 
-      cols.forEach(col => {
-        if (revisedCols.has(col)) {
-          revisedCols.set(col, revisedCols.get(col) + 1);
-        } else {
-          revisedCols.set(col, 1);
+        return clickedRef.current;
+      });
+    },
+    [updateGlobalClicked]
+  );
+
+  const excludeCell = useCallback(
+    (rows, cols, id) => {
+      setClicked(prevState => {
+        const revisedRows = new Map(prevState.rows);
+        const revisedCols = new Map(prevState.cols);
+        const revisedCell = new Set(prevState.cell);
+        rows.forEach(row => {
+          const diff = revisedRows.get(row) - 1;
+          if (diff > 0) {
+            revisedRows.set(row, diff);
+          } else {
+            revisedRows.delete(row);
+          }
+        });
+
+        cols.forEach(col => {
+          const diff = revisedCols.get(col) - 1;
+          if (diff > 0) {
+            revisedCols.set(col, diff);
+          } else {
+            revisedCols.delete(col);
+          }
+        });
+
+        revisedCell.delete(id);
+        const nextState = {
+          rows: revisedRows,
+          cols: revisedCols,
+          cell: revisedCell
+        };
+        clickedRef.current = nextState;
+
+        if (updateGlobalClicked) {
+          updateGlobalClicked(nextState);
         }
-      });
 
-      revisedCell.add(id);
-      const nextState = {
-        rows: revisedRows,
-        cols: revisedCols,
-        cell: revisedCell
+        return clickedRef.current;
+      });
+    },
+    [updateGlobalClicked]
+  );
+
+  const onMouseDown = useCallback(
+    (e, rows, cols, id) => {
+      draggableRef.current = {
+        point: {
+          id,
+          rows,
+          cols
+        },
+        dragged: true
       };
+      setDraggable(draggableRef.current);
 
-      clickedRef.current = nextState;
-      if (updateGlobalClicked) {
-        updateGlobalClicked(nextState);
-      }
-
-      return clickedRef.current;
-    });
-  }, [updateGlobalClicked]);
-
-  const excludeCell = useCallback((rows, cols, id) => {
-    setClicked(prevState => {
-      const revisedRows = new Map(prevState.rows);
-      const revisedCols = new Map(prevState.cols);
-      const revisedCell = new Set(prevState.cell);
-      rows.forEach(row => {
-        const diff = revisedRows.get(row) - 1;
-        if (diff > 0) {
-          revisedRows.set(row, diff);
+      if (e.ctrlKey) {
+        if (clickedRef.current.cell.has(id)) {
+          excludeCell(rows, cols, id);
         } else {
-          revisedRows.delete(row);
+          includeCell(rows, cols, id);
         }
-      });
+        return;
+      }
 
-      cols.forEach(col => {
-        const diff = revisedCols.get(col) - 1;
-        if (diff > 0) {
-          revisedCols.set(col, diff);
-        } else {
-          revisedCols.delete(col);
+      setClicked(() => {
+        const mappedRow = new Map();
+        const mappedCol = new Map();
+        rows.forEach(row => mappedRow.set(row, 1));
+        cols.forEach(col => mappedCol.set(col, 1));
+        const nextState = {
+          rows: mappedRow,
+          cols: mappedCol,
+          cell: new Set([id])
+        };
+        clickedRef.current = nextState;
+        if (updateGlobalClicked) {
+          updateGlobalClicked(nextState);
         }
+        return clickedRef.current;
       });
-
-      revisedCell.delete(id);
-      const nextState = {
-        rows: revisedRows,
-        cols: revisedCols,
-        cell: revisedCell
-      };
-      clickedRef.current = nextState;
-
-      if (updateGlobalClicked) {
-        updateGlobalClicked(nextState);
-      }
-
-      return clickedRef.current;
-    });
-  }, [updateGlobalClicked]);
-
-  const onMouseDown = useCallback((e, rows, cols, id) => {
-    draggableRef.current = {
-      point: {
-        id,
-        rows,
-        cols
-      },
-      dragged: true
-    };
-    setDraggable(draggableRef.current);
-
-    if (e.ctrlKey) {
-      if (clickedRef.current.cell.has(id)) {
-        excludeCell(rows, cols, id);
-      } else {
-        includeCell(rows, cols, id);
-      }
-      return;
-    }
-
-    setClicked(() => {
-      const mappedRow = new Map();
-      const mappedCol = new Map();
-      rows.forEach(row => mappedRow.set(row, 1));
-      cols.forEach(col => mappedCol.set(col, 1));
-      const nextState = {
-        rows: mappedRow,
-        cols: mappedCol,
-        cell: new Set([id])
-      };
-      clickedRef.current = nextState;
-      if (updateGlobalClicked) {
-        updateGlobalClicked(nextState);
-      }
-      return clickedRef.current;
-    });
-  }, [excludeCell, includeCell, updateGlobalClicked]);
+    },
+    [excludeCell, includeCell, updateGlobalClicked]
+  );
 
   const cellBundler = useCallback((
     rowsMin,
@@ -382,7 +361,10 @@ const TableCanvas = ({
   );
 
   return (
-    <div className="TableCanvas">
+    <div
+      className="TableCanvas"
+      // onWheel={onWheel}
+    >
       <div className="ColHeader">
         {coverRef.current.columnHeader &&
           coverRef.current.columnHeader.map(section => (
@@ -393,11 +375,12 @@ const TableCanvas = ({
             >
               {!section.children ||
                 (section.children && section.children.length > 0 && (
-                  <ColWrapper 
+                  <DefaultText
+                    cn="ColWrapper"
                     style={section.children ? {} : { borderLeft: '0px' }}
                   >
                     {section.title}
-                  </ColWrapper>
+                  </DefaultText>
                 ))}
               {section.children ? (
                 <div
@@ -417,7 +400,7 @@ const TableCanvas = ({
                       <TableHeader
                         key={`col_${index}`}
                         col
-                        width={col.width + 'px'}
+                        width={parseInt(col.width * zoom) + 'px'}
                         index={colCount}
                         onClick={onClick.bind(null, ['column', colCount])}
                         state={state}
@@ -445,11 +428,12 @@ const TableCanvas = ({
                         width: '120px'
                       }}
                     >
-                      <RowWrapper
+                      <DefaultText
+                        cn="RowWrapper"
                         style={rowCount > 0 ? {} : { borderTop: '0px' }}
                       >
                         {section.title}
-                      </RowWrapper>
+                      </DefaultText>
                       {section.children ? (
                         <div
                           style={{
@@ -469,7 +453,7 @@ const TableCanvas = ({
                               <TableHeader
                                 key={`row_${index}`}
                                 row
-                                height={row.height + 'px'}
+                                height={parseInt(row.height * zoom) + 'px'}
                                 onClick={onClick.bind(null, ['row', rowCount])}
                                 index={rowCount}
                                 state={state}

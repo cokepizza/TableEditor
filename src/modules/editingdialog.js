@@ -1,7 +1,12 @@
 import { createAction, handleActions } from 'redux-actions';
 import produce from 'immer';
 
-import { setCover, setCell, refreshPartialSum } from './tablecanvas';
+import {
+  setPartialSum,
+  setCover,
+  setCell,
+  refreshPartialSum
+} from './tablecanvas';
 import { filter } from '../lib/filter';
 
 export const parentList = {
@@ -48,18 +53,65 @@ const PROPERTY_CLICK = 'editingdialog/PROPERTY_CLICK';
 const INIT_PROPERTIES = 'editingdialog/INIT_PROPERTIES';
 const SET_PROPERTIES = 'editingdialog/SET_PROPERTIES';
 const CLEAR_PROPERTIES = 'editingdialog/CLEAR_PROPERTIES';
-const HEADERONLY_TOGGLE = 'editingdialog/HEADERONLY_TOGGLE';
+const SET_TOGGLE = 'editingdialog/SET_TOGGLE';
+const SET_ZOOM = 'editingdialog/SET_ZOOM';
 const CLEAR_ALL = 'editingdialog/CLEAR_ALL';
 export const menuToggle = createAction(MENU_TOGGLE, requestType => requestType);
 export const propertyClick = createAction(PROPERTY_CLICK, selected => selected);
 export const initProperties = createAction(INIT_PROPERTIES, payload => payload);
 export const setProperties = createAction(SET_PROPERTIES, payload => payload);
+export const setZoom = createAction(SET_ZOOM, payload => payload);
 export const clearProperties = createAction(
   CLEAR_PROPERTIES,
   payload => payload
 );
-export const headerOnlyToggle = createAction(HEADERONLY_TOGGLE);
+export const setToggle = createAction(SET_TOGGLE, payload => payload);
 export const clearAll = createAction(CLEAR_ALL);
+
+export const setZoomThunk = ({ zoom }) => (dispatch, getState) => {
+  const {
+    tablecanvas: { cover }
+  } = getState();
+
+  dispatch(
+    setPartialSum({
+      partialSum: refreshPartialSum({
+        columnHeader: cover.columnHeader,
+        rowHeader: cover.rowHeader,
+        zoom
+      })
+    })
+  );
+
+  dispatch(
+    setZoom({
+      zoom
+    })
+  );
+
+  // const revisedCover = {
+  //   ...cover,
+  //   partialSum: refreshPartialSum({
+  //     columnHeader: cover.columnHeader,
+  //     rowHeader: cover.rowHeader,
+  //     zoom,
+  //   }),
+  // };
+
+  // console.dir(revisedCover);
+
+  // dispatch(setCover({
+  //   cover: revisedCover,
+  // }))
+
+  // dispatch(setPartialSum({
+  //   partialSum: refreshPartialSum({
+  //     columnHeader: cover.columnHeader,
+  //     rowHeader: cover.rowHeader,
+  //     zoom,
+  //   }),
+  // }));
+};
 
 export const propertyFilterThunk = ({ value }) => (dispatch, getState) => {
   const {
@@ -196,7 +248,7 @@ export const onChangeThunk = ({ value, name }) => (dispatch, getState) => {
 export const onSubmitThunk = ({ value, name }) => (dispatch, getState) => {
   const {
     tablecanvas: { cover, cell },
-    editingdialog: { selected }
+    editingdialog: { selected, zoom }
   } = getState();
 
   console.dir(cover);
@@ -211,7 +263,8 @@ export const onSubmitThunk = ({ value, name }) => (dispatch, getState) => {
           ...revisedCover,
           partialSum: refreshPartialSum({
             columnHeader: revisedCover.columnHeader,
-            rowHeader: revisedCover.rowHeader
+            rowHeader: revisedCover.rowHeader,
+            zoom
           })
         }
       })
@@ -224,7 +277,8 @@ export const onSubmitThunk = ({ value, name }) => (dispatch, getState) => {
           ...revisedCover,
           partialSum: refreshPartialSum({
             columnHeader: revisedCover.columnHeader,
-            rowHeader: revisedCover.rowHeader
+            rowHeader: revisedCover.rowHeader,
+            zoom
           })
         }
       })
@@ -279,7 +333,9 @@ const initialState = {
     index: null
   },
   actionIcon,
-  headerOnly: false
+  headerOnly: false,
+  scale: false,
+  zoom: 1
 };
 
 const editingdialog = handleActions(
@@ -303,19 +359,16 @@ const editingdialog = handleActions(
     //       }
     //     }, {});
     //   }),
-    [PROPERTY_CLICK]: (state, { payload }) => {
-      console.dir(payload);
-      return {
-        ...state,
-        properties: {
-          ...state.properties,
-          [payload]: {
-            ...state.properties[payload],
-            checked: !state.properties[payload]['checked']
-          }
+    [PROPERTY_CLICK]: (state, { payload }) => ({
+      ...state,
+      properties: {
+        ...state.properties,
+        [payload]: {
+          ...state.properties[payload],
+          checked: !state.properties[payload]['checked']
         }
-      };
-    },
+      }
+    }),
     [INIT_PROPERTIES]: (state, { payload: { properties, type, index } }) => ({
       ...state,
       properties,
@@ -333,9 +386,13 @@ const editingdialog = handleActions(
       properties: initialState.properties,
       selected: initialState.selected
     }),
-    [HEADERONLY_TOGGLE]: state => ({
+    [SET_TOGGLE]: (state, { payload: { key } }) => ({
       ...state,
-      headerOnly: !state.headerOnly
+      [key]: !state[key]
+    }),
+    [SET_ZOOM]: (state, { payload: { zoom } }) => ({
+      ...state,
+      zoom
     }),
     [CLEAR_ALL]: state => initialState
   },

@@ -4,7 +4,6 @@ import styled from 'styled-components';
 const DefaultTextBlock = styled.p`
     display: flex;
     align-items: center;
-    justify-content: flex-start;
     font-size: 12px;
     font-weight: bold;
     width: 100%;

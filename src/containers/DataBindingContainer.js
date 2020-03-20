@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+// import 'babel-polyfill';
 
 import DataBinding from '../components/DataBinding';
 import useAsync from '../components/Hook/useAsync';

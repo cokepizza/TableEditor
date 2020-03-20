@@ -1,4 +1,5 @@
 .TableCanvas {
+    width: max-content;
     box-sizing: border-box;
     border: 1px solid black;
     margin-top: 20px;
@@ -159,5 +160,5 @@
     align-items: center;
     border-top: 1px solid black;
     box-sizing: border-box;
-    height: auto;
+    height: auto !important;
 }

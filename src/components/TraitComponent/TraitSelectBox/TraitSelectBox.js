@@ -58,13 +58,6 @@ const NameBlock = styled.div`
   width: 60px;
 `;
 
-// const SelectBox = () => {
-//   return (
-//     <>
-//     </>
-//   )
-// }
-
 const SelectBox = ({ name, value, param, onClick }) => {
   return (
     <SelectBoxFrameBlock>
@@ -93,7 +86,5 @@ const SelectBox = ({ name, value, param, onClick }) => {
     </SelectBoxFrameBlock>
   );
 };
-
-
 
 export default SelectBox;

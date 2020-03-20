@@ -1,24 +1,69 @@
-import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useCallback, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import ModalBackground from '../components/ModalBackground';
-import { clearAll as editingdialogClearAll } from '../modules/editingdialog';
-import { clearAll as tablecanvasClearAll } from '../modules/tablecanvas';
+import {
+  setZoomThunk
+} from '../modules/editingdialog';
 
-const ModalBackgroundContainer = ({ modal, ...rest }) => {
+const ModalBackgroundContainer = ({ ...rest }) => {
+  const { zoom } = useSelector(({ editingdialog }) => ({
+    zoom: editingdialog.zoom
+  }));
+
+  const zoomRef = useRef();
+
+  useEffect(() => {
+    zoomRef.current = zoom;
+  }, [zoom]);
+
   const dispatch = useDispatch();
 
-  const onClick = useCallback(
+  //  window event
+  const onWheel = useCallback(
     e => {
-      e.stopPropagation();
-      dispatch(editingdialogClearAll());
-      dispatch(tablecanvasClearAll());
-      // modal.close();
+      if (e.ctrlKey) {
+        e.preventDefault();
+        let revisedZoom = zoomRef.current;
+        revisedZoom += e.deltaY * -0.001;
+        revisedZoom = Math.round(revisedZoom * 10) / 10;
+        if (0.1 <= revisedZoom && revisedZoom <= 2) {
+          dispatch(
+            setZoomThunk({
+              zoom: revisedZoom
+            })
+          );
+        }
+      }
     },
     [dispatch]
   );
 
-  return <ModalBackground {...rest} modal={modal} onClick={onClick} />;
+  useEffect(() => {
+    window.addEventListener('wheel', onWheel, { passive: false });
+  }, [onWheel]);
+
+  const onClose = useCallback(() => {
+    // dispatch(editingdialogClearAll());
+    // dispatch(tablecanvasClearAll());
+    window.removeEventListener('wheel', onWheel);
+  }, [onWheel]);
+
+  const onClick = useCallback(
+    e => {
+      e.stopPropagation();
+      onClose();
+    },
+    [onClose]
+  );
+
+  return (
+    <ModalBackground
+      {...rest}
+      onClick={onClick}
+      onClose={onClose}
+    />
+  );
 };
 
 export default ModalBackgroundContainer;

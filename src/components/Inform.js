@@ -122,31 +122,32 @@ const Inform = ({ active, onCloseSideModal }) => {
       <InformBodyBlock>
         <TextBlock>This table is similar to Excel operation </TextBlock>
         <SpanBlock />
-        <TextBlock title='true'>Functional Specification</TextBlock>
-        <TextBlock span='true'>• Row Add & Del</TextBlock>
-        <TextBlock span='true'>• Col Add & Del</TextBlock>
-        <TextBlock span='true'>
-          • Cell MultiSelect using Ctrl Key & Drag
+        <TextBlock title="true">Functional Specification</TextBlock>
+        <TextBlock span="true">● Row Add & Del</TextBlock>
+        <TextBlock span="true">● Col Add & Del</TextBlock>
+        <TextBlock span="true">
+          ● Cell MultiSelect using Ctrl Key & Drag
         </TextBlock>
-        <TextBlock span='true'>• Cell Merge</TextBlock>
-        <TextBlock span='true'>• Cell Divide</TextBlock>
-        <TextBlock span='true'>• Row, Col, Cell Property Setting</TextBlock>
-        <TextBlock span='true'>• Both header & body Editable</TextBlock>
-        <TextBlock span='true'>• Header only Editable</TextBlock>
-        <TextBlock span='true'>• Edit both the header and the body</TextBlock>
-        <TextBlock span='true'>• Provide a Property helpbox</TextBlock>
-        <TextBlock span='true'>• Table Databinding Setting</TextBlock>
-        <SpanBlock small='true' />
-        <TextBlock title='true'>Shortcut</TextBlock>
-        <TextBlock span='true'>• Cell Merge : ＋ Button</TextBlock>
-        <TextBlock span='true'>• Cell Divide : － Button</TextBlock>
-        <SpanBlock small='true' />
-        <TextBlock title='true'>Restiction</TextBlock>
-        <TextBlock span='true'>
-          • Merge cells only works with rectangular shapes
+        <TextBlock span="true">● Cell Merge & Divide</TextBlock>
+        <TextBlock span="true">● Row, Col, Cell Property Setting</TextBlock>
+        <TextBlock span="true">● Both header & body Editable</TextBlock>
+        <TextBlock span="true">● Header only Editable</TextBlock>
+        <TextBlock span="true">● Scalable Table</TextBlock>
+        <TextBlock span="true">● Edit both the header and the body</TextBlock>
+        <TextBlock span="true">● Provide a Property helpbox</TextBlock>
+        <TextBlock span="true">● Table Databinding Setting</TextBlock>
+        <SpanBlock small="true" />
+        <TextBlock title="true">Shortcut</TextBlock>
+        <TextBlock span="true">● Cell Merge : ＋ Button</TextBlock>
+        <TextBlock span="true">● Cell Divide : － Button</TextBlock>
+        <TextBlock span="true">● Table Zoom : Ctrl + Mouse Scroll </TextBlock>
+        <SpanBlock small="true" />
+        <TextBlock title="true">Restiction</TextBlock>
+        <TextBlock span="true">
+          ● Merge cells only works with rectangular shapes
         </TextBlock>
-        <TextBlock span='true'>
-          • Merge cells only works in the same area
+        <TextBlock span="true">
+          ● Merge cells only works in the same area
         </TextBlock>
       </InformBodyBlock>
     </InformBlock>

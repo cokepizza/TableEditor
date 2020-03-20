@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
@@ -14,11 +14,14 @@ import EditorDialog from '../components/EditingDialog/EditingDialog';
 import { menuToggle } from '../modules/editingdialog';
 import { setDataSelected } from '../modules/tablecanvas';
 import { nameFinder } from '../lib/nameFinder';
-import { clearAll as editingdialogClearAll } from '../modules/editingdialog';
-import { clearAll as tablecanvasClearAll } from '../modules/tablecanvas';
 import { refreshPartialSum } from '../modules/tablecanvas';
 
-const EditingDialogContainer = ({ modal, model, editor, tableConfig }) => {
+const EditingDialogContainer = ({
+  model,
+  editor,
+  tableConfig,
+  onClose
+}) => {
   const {
     menu,
     actionIcon,
@@ -27,7 +30,7 @@ const EditingDialogContainer = ({ modal, model, editor, tableConfig }) => {
     cellId,
     cover,
     dataBinding,
-    dataSelected
+    dataSelected,
   } = useSelector(({ editingdialog, tablecanvas }) => ({
     menu: editingdialog.menu,
     actionIcon: editingdialog.actionIcon,
@@ -36,10 +39,46 @@ const EditingDialogContainer = ({ modal, model, editor, tableConfig }) => {
     cellId: tablecanvas.cellId,
     cover: tablecanvas.cover,
     dataBinding: tablecanvas.dataBinding,
-    dataSelected: tablecanvas.dataSelected
+    dataSelected: tablecanvas.dataSelected,
+    zoom: editingdialog.zoom
   }));
 
   const dispatch = useDispatch();
+
+  // const zoomRef = useRef();
+
+  // useEffect(() => {
+  //   zoomRef.current = zoom;
+  // }, [zoom]);
+
+  // const canvasWidth = cover.columnHeader.reduce((acc, cur) => {
+  //   if (cur.children) {
+  //     return (
+  //       acc + cur.children.reduce((acc, cur) => acc + parseInt(cur.width), 0)
+  //     );
+  //   } else {
+  //     return acc + parseInt(cur.width);
+  //   }
+  // }, 0);
+
+  const [canvasWidth, setCanvasWidth] = useState(0);
+
+  useEffect(() => {
+    // const width = cover.columnHeader.reduce((acc, cur) => {
+    //   if (cur.children) {
+    //     return (
+    //       acc + cur.children.reduce((acc, cur) => acc + parseInt(cur.width), 0)
+    //     );
+    //   } else {
+    //     return acc + parseInt(cur.width);
+    //   }
+    // }, 0);
+    // console.dir(width);
+    const cols = cover.partialSum.cols;
+
+    const width = parseInt(cols[cols.length - 1]) + 120;
+    setCanvasWidth(width);
+  }, [cover]);
 
   const onMergeCell = useCallback(() => {
     dispatch(mergeCellThunk({ globalClicked, cell, cellId }));
@@ -65,14 +104,9 @@ const EditingDialogContainer = ({ modal, model, editor, tableConfig }) => {
     dispatch(delRowsThunk({ globalClicked, cell, cellId, cover }));
   }, [dispatch, globalClicked, cell, cellId, cover]);
 
-  const onClose = useCallback(() => {
-    dispatch(editingdialogClearAll());
-    dispatch(tablecanvasClearAll());
-    // modal.close();
-  }, [dispatch]);
-
   useEffect(() => {
     let { cell, cover } = tableConfig;
+
     cover = {
       ...cover,
       partialSum: refreshPartialSum({
@@ -125,15 +159,15 @@ const EditingDialogContainer = ({ modal, model, editor, tableConfig }) => {
     e.stopPropagation();
   }, []);
 
-  const canvasWidth = cover.columnHeader.reduce((acc, cur) => {
-    if (cur.children) {
-      return (
-        acc + cur.children.reduce((acc, cur) => acc + parseInt(cur.width), 0)
-      );
-    } else {
-      return acc + parseInt(cur.width);
-    }
-  }, 0);
+  // const canvasWidth = cover.columnHeader.reduce((acc, cur) => {
+  //   if (cur.children) {
+  //     return (
+  //       acc + cur.children.reduce((acc, cur) => acc + parseInt(cur.width), 0)
+  //     );
+  //   } else {
+  //     return acc + parseInt(cur.width);
+  //   }
+  // }, 0);
 
   return (
     <EditorDialog

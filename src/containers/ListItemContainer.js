@@ -8,8 +8,11 @@ const ListItemContainer = props => {
   return <ListItem {...props} />;
 };
 
-export default connect(() => ({}), {
-  textWrite,
-  textErase,
-  propertyClick
-})(ListItemContainer);
+export default connect(
+  () => ({}),
+  {
+    textWrite,
+    textErase,
+    propertyClick
+  }
+)(ListItemContainer);

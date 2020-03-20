@@ -11,7 +11,7 @@ const ModalBackgroundBlock = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: transparent;
   z-index: 1000;
   user-select: none;
 `;

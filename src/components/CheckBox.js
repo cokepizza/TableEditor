@@ -5,6 +5,7 @@ const CheckBoxBlock = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-right: 10px;
 `;
 
 const CheckBoxInputBlock = styled.input``;

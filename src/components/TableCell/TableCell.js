@@ -7,7 +7,7 @@ const keySet = new Set([
   'width',
   'height',
   'state',
-  'cellIndex'
+  'cellIndex',
 ]);
 
 const TableCellBlock = styled.div`
@@ -24,6 +24,7 @@ const TableCellBlock = styled.div`
     outline: 1px solid blueviolet;
   }
 `;
+
 const BorderBottom = styled.div`
   position: absolute;
   top: -1px;
@@ -53,7 +54,6 @@ const TableCell = ({
   height,
   state,
   div,
-  cellIndex,
   onMouseOver,
   onMouseDown,
   onMouseMove,
@@ -70,7 +70,7 @@ const TableCell = ({
         left: left ? left : '0px',
         width: width ? width : '0px',
         height: height ? height : '0px',
-        backgroundColor: state === 'clicked' ? 'pink' : 'transparent'
+        backgroundColor: state === 'clicked' ? 'pink' : 'transparent',
       }}
       onMouseOver={onMouseOver}
       onMouseDown={onMouseDown}
@@ -90,7 +90,7 @@ const TableCell = ({
           }}
         />
       )}
-      Cell {cellIndex}
+      {/* Cell {cellIndex} */}
     </TableCellBlock>
   );
 };

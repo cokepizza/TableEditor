@@ -82,7 +82,8 @@ export const clearAll = createAction(CLEAR_ALL);
 
 export const makeShrinkBody = () => (dispatch, getState) => {
   const {
-    tablecanvas: { cell, cellId, cover }
+    tablecanvas: { cell, cellId, cover },
+    editingdialog: { zoom }
   } = getState();
 
   const borderHeight = cover.rowHeader[0].children.length;
@@ -98,7 +99,10 @@ export const makeShrinkBody = () => (dispatch, getState) => {
 
   revisedCell = revisedCell.filter(cell => cell.rows[0] < borderHeight);
   revisedCover.rowHeader.splice(1, 1);
-  const revisedPartialSum = refreshPartialSum(revisedCover);
+  const revisedPartialSum = refreshPartialSum({
+    ...revisedCover,
+    zoom
+  });
 
   dispatch(
     setValue({
@@ -115,7 +119,8 @@ export const makeShrinkBody = () => (dispatch, getState) => {
 
 export const makeFullBody = () => (dispatch, getState) => {
   const {
-    tablecanvas: { cell, cellId, cover }
+    tablecanvas: { cell, cellId, cover },
+    editingdialog: { zoom }
   } = getState();
 
   let revisedCellId = cellId;
@@ -135,7 +140,10 @@ export const makeFullBody = () => (dispatch, getState) => {
     ..._.cloneDeep(revisedCover.rowHeader[0]),
     title: 'Body'
   });
-  const revisedPartialSum = refreshPartialSum(revisedCover);
+  const revisedPartialSum = refreshPartialSum({
+    ...revisedCover,
+    zoom
+  });
 
   const revisedGlobalClicked = {
     rows: new Map(),
@@ -156,13 +164,84 @@ export const makeFullBody = () => (dispatch, getState) => {
   );
 };
 
+// const compareRange = (targetRange, findRange) => {
+//   if (
+//     findRange[0] <= targetRange[0] &&
+//     targetRange[targetRange.length - 1] <= findRange[findRange.length - 1]
+//   ) {
+//     return true;
+//   }
+//   return false;
+// };
+
+// const deleteCell = (findedCell, revisedCell) =>
+//   revisedCell.filter(rCell => findedCell.every(dCell => rCell.id !== dCell));
+
+// const pushCell = (findedCell, revisedCell, headerHeight, revisedCellId) => {
+//   const filteredCell = revisedCell.filter(rCell =>
+//     findedCell.some(pCell => rCell.id === pCell)
+//   );
+
+//   console.dir(revisedCell);
+  
+//   filteredCell.forEach(cell => {
+//     revisedCell.push({
+//       ...cell,
+//       id: ++revisedCellId,
+//       rows: cell.rows.map(val => val + headerHeight)
+//     });
+//   });
+
+//   return {
+//     revisedCell,
+//     revisedCellId
+//   };
+// };
+
+// const findCellByRange = (cell, range) => {
+//   const findedCell = [];
+
+//   cell.forEach(cel => {
+//     const { cols, rows } = cel;
+//     if (compareRange(cols, range.cols) && compareRange(rows, range.rows)) {
+//       findedCell.push(cel.id);
+//     }
+//   });
+
+//   return findedCell;
+// };
+
+// const findCellByRangeAndDelete = (revisedCell, targetRange) =>
+//   deleteCell(findCellByRange(revisedCell, targetRange), revisedCell);
+// const findCellByRangeAndPush = (revisedCell, originRange, headerHeight, revisedCellId) =>
+//   pushCell(findCellByRange(revisedCell, originRange), revisedCell, headerHeight, revisedCellId);
+
+// const synchronizeArea = (revisedGlobalClicked, revisedCell, revisedCellId, cover) => {
+//   const headerHeight = cover.rowHeader[0].children.length;
+//   const originRange = {
+//     cols: [...revisedGlobalClicked.cols.keys()].sort((a, b) => a - b),
+//     rows: [...revisedGlobalClicked.rows.keys()].sort((a, b) => a - b)
+//   };
+//   const targetRange = {
+//     cols: [...revisedGlobalClicked.cols.keys()].sort((a, b) => a - b),
+//     rows: [...revisedGlobalClicked.rows.keys()]
+//       .sort((a, b) => a - b)
+//       .map(val => val + headerHeight)
+//   };
+
+//   revisedCell = findCellByRangeAndDelete(revisedCell, targetRange);
+//   const result = findCellByRangeAndPush(revisedCell, originRange, headerHeight, revisedCellId);
+  
+//   return result;
+// };
+
 export const mergeCellThunk = () => (dispatch, getState) => {
   const {
-    tablecanvas: { cell, cellId, cover, globalClicked }
+    tablecanvas: { cell, cellId, cover, globalClicked },
   } = getState();
 
   const revisedGlobalClicked = { ...globalClicked };
-  const revisedCell = [...cell];
+  let revisedCell = [...cell];
   let revisedCellId = cellId;
   if (
     revisedGlobalClicked &&
@@ -182,6 +261,13 @@ export const mergeCellThunk = () => (dispatch, getState) => {
 
     revisedGlobalClicked.cell = new Set([revisedCellId]);
 
+    // if (headerOnly) {
+
+    // } else {
+    //   //  synchronize header & body
+    //   ({ revisedCell, revisedCellId } = synchronizeArea(revisedGlobalClicked, revisedCell, revisedCellId, cover));
+    // }
+
     dispatch(
       mergeCell({
         cell: revisedCell,
@@ -191,6 +277,7 @@ export const mergeCellThunk = () => (dispatch, getState) => {
     );
 
     dispatch(clearProperties());
+
     return;
   }
 
@@ -200,7 +287,7 @@ export const mergeCellThunk = () => (dispatch, getState) => {
 
 export const divideCellThunk = () => (dispatch, getState) => {
   const {
-    tablecanvas: { cell, cellId, globalClicked }
+    tablecanvas: { cell, cellId, globalClicked },
   } = getState();
 
   let genArr = [];
@@ -233,6 +320,13 @@ export const divideCellThunk = () => (dispatch, getState) => {
   revisedGlobalClicked.cell = new Set([...genArr.map(genObj => genObj.id)]);
   revisedCell = [...revisedCell, ...genArr];
 
+  // if(headerOnly) {
+    
+  // } else {
+  //   //  synchronize header & body
+  //   ({ revisedCell, revisedCellId } = synchronizeArea(revisedGlobalClicked, revisedCell, revisedCellId, cover));
+  // }
+
   dispatch(
     divideCell({
       cell: revisedCell,
@@ -244,7 +338,7 @@ export const divideCellThunk = () => (dispatch, getState) => {
   dispatch(clearProperties());
 };
 
-const getPartialSum = (arr, type) => {
+const getPartialSum = (zoom, arr, type) => {
   let sum = 0;
   let flattedArr = arr
     .flatMap(obj => {
@@ -252,8 +346,8 @@ const getPartialSum = (arr, type) => {
       return obj.children.map(child => child[type]);
     })
     .reduce((acc, cur) => {
-      acc.push(sum + parseInt(cur));
-      sum += parseInt(cur);
+      acc.push(sum + parseInt(parseInt(cur) * zoom));
+      sum += parseInt(parseInt(cur) * zoom);
       return acc;
     }, []);
 
@@ -265,10 +359,10 @@ const getPartialSum = (arr, type) => {
   return flattedArr;
 };
 
-export const refreshPartialSum = cover => {
+export const refreshPartialSum = ({ columnHeader, rowHeader, zoom = 1 }) => {
   return {
-    cols: getPartialSum(cover.columnHeader, 'width'),
-    rows: getPartialSum(cover.rowHeader, 'height')
+    cols: getPartialSum(zoom, columnHeader, 'width'),
+    rows: getPartialSum(zoom, rowHeader, 'height')
   };
 };
 
@@ -589,7 +683,8 @@ const refreshGlobalClicked = (revisedCell, globalClicked) => {
 
 export const addColsThunk = () => (dispatch, getState) => {
   const {
-    tablecanvas: { cell, cellId, cover, globalClicked }
+    tablecanvas: { cell, cellId, cover, globalClicked },
+    editingdialog: { zoom }
   } = getState();
   const kind = 'cols';
 
@@ -602,7 +697,10 @@ export const addColsThunk = () => (dispatch, getState) => {
 
   const { revisedCell, revisedCellId } = addCell(kind, cell, cellId, required);
   const revisedGlobalClicked = refreshGlobalClicked(revisedCell, globalClicked);
-  const revisedPartialSum = refreshPartialSum(revisedCover);
+  const revisedPartialSum = refreshPartialSum({
+    ...revisedCover,
+    zoom
+  });
 
   dispatch(
     setValue({
@@ -619,7 +717,9 @@ export const addColsThunk = () => (dispatch, getState) => {
 
 export const addRowsThunk = () => (dispatch, getState) => {
   const {
-    tablecanvas: { cell, cellId, cover, globalClicked }
+    tablecanvas: { cell, cellId, cover, globalClicked },
+    editingdialog: { zoom },
+
   } = getState();
   const kind = 'rows';
 
@@ -631,8 +731,12 @@ export const addRowsThunk = () => (dispatch, getState) => {
   };
 
   const { revisedCell, revisedCellId } = addCell(kind, cell, cellId, required);
+
   const revisedGlobalClicked = refreshGlobalClicked(revisedCell, globalClicked);
-  const revisedPartialSum = refreshPartialSum(revisedCover);
+  const revisedPartialSum = refreshPartialSum({
+    ...revisedCover,
+    zoom
+  });
 
   dispatch(
     setValue({
@@ -645,11 +749,20 @@ export const addRowsThunk = () => (dispatch, getState) => {
       globalClicked: revisedGlobalClicked
     })
   );
+
+  // if(headerOnly) {
+
+  // } else {
+  //   dispatch(makeShrinkBody());
+  //   dispatch(makeFullBody());
+  //   dispatch(setValue({ globalClicked: revisedGlobalClicked }));
+  // }
 };
 
 export const delColsThunk = () => (dispatch, getState) => {
   const {
-    tablecanvas: { cell, cellId, cover, globalClicked }
+    tablecanvas: { cell, cellId, cover, globalClicked },
+    editingdialog: { zoom }
   } = getState();
   const kind = 'cols';
 
@@ -666,7 +779,10 @@ export const delColsThunk = () => (dispatch, getState) => {
     cols: new Map(),
     cell: new Set()
   };
-  const revisedPartialSum = refreshPartialSum(revisedCover);
+  const revisedPartialSum = refreshPartialSum({
+    ...revisedCover,
+    zoom
+  });
 
   dispatch(
     setValue({
@@ -683,7 +799,8 @@ export const delColsThunk = () => (dispatch, getState) => {
 
 export const delRowsThunk = () => (dispatch, getState) => {
   const {
-    tablecanvas: { cell, cellId, cover, globalClicked }
+    tablecanvas: { cell, cellId, cover, globalClicked },
+    editingdialog: { zoom }
   } = getState();
   const kind = 'rows';
 
@@ -700,7 +817,10 @@ export const delRowsThunk = () => (dispatch, getState) => {
     cols: new Map(),
     cell: new Set()
   };
-  const revisedPartialSum = refreshPartialSum(revisedCover);
+  const revisedPartialSum = refreshPartialSum({
+    ...revisedCover,
+    zoom
+  });
 
   dispatch(
     setValue({
@@ -903,10 +1023,10 @@ const tablecanvas = handleActions(
       { payload: { cover, cell, cellId, globalClicked } }
     ) => ({
       ...state,
-      cover,
-      cell,
-      cellId,
-      globalClicked
+      cover: cover ? cover : state.cover,
+      cell: cell ? cell: state.cell,
+      cellId: cellId ? cellId : state.cellId,
+      globalClicked: globalClicked ? globalClicked : state.globalClicked,
     }),
     [CLEAR_DATABINDING]: state => ({
       ...state,
