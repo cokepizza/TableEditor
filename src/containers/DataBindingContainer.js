@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 // import 'babel-polyfill';
 
 import DataBinding from '../components/DataBinding';
+import dataIns from '../dataInstance';
 import useAsync from '../components/Hook/useAsync';
 import jsonParser from '../lib/jsonParser';
 import {
@@ -25,30 +26,36 @@ const DataBindingContainer = ({ onCloseSideModal, editor }) => {
   const dispatch = useDispatch();
 
   const connection = async () => {
-    const DBSvc = editor.getModel().get('DBSvc');
+    // const DBSvc = editor.getModel().get('DBSvc');
+    const dataInstacnce = () => {
+      return new Promise((resolve, reject) => {
+        resolve(dataIns);
+      });
+    }
 
     try {
       const data = await new Promise((resolve, reject) => {
         setTimeout(async () => {
-          resolve(await DBSvc.getDataInstanceList());
+          // resolve(await DBSvc.getDataInstanceList());
+          resolve(await dataInstacnce());
         }, 1000);
       });
 
-      const dataInstancePackage = data.global.reduce(
-        (acc, cur) => [...acc, ...cur.dataInstancePackage],
-        []
-      );
-      data.global = [
-        {
-          Name: 'global',
-          Id: 'global',
-          dataInstancePackage
-        }
-      ];
+      // const dataInstancePackage = data.global.reduce(
+      //   (acc, cur) => [...acc, ...cur.dataInstancePackage],
+      //   []
+      // );
+      // data.global = [
+      //   {
+      //     Name: 'global',
+      //     Id: 'global',
+      //     dataInstancePackage
+      //   }
+      // ];
 
-      const localNameTree = jsonParser(data.viewController);
-      const globalNameTree = jsonParser(data.global);
-      const dataBinding = { ...globalNameTree, ...localNameTree };
+      const localNameTree = jsonParser(data.msg.viewController);
+      // const globalNameTree = jsonParser(data.global);
+      const dataBinding = { ...localNameTree };
 
       dispatch(
         setDataBinding({
