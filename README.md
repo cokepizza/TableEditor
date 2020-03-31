@@ -1,6 +1,6 @@
 # TableEditor
 
-. Editor that can easily modify the table like Excel <https://hixxx.me/tableEditor>
+Editor that can easily modify the table like Excel <https://hixxx.me/tableEditor>
 
 ----
 
